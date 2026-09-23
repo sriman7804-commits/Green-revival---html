@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Revival - Turning Waste into Worth</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f6faf5',
+                            100: '#e4f4df',
+                            200: '#c5e8bb',
+                            500: '#71a94e',
+                            600: '#237a3b',
+                            700: '#1f6335',
+                            800: '#173a21',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f6faf5; color: #203127; }
+        .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+        .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f1; }
+        ::-webkit-scrollbar-thumb { background: #c5e8bb; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #71a94e; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-100 selection:text-brand-800">
+
+    <!-- NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 w-full glass-panel border-b border-brand-100 shadow-sm transition-all duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <button onclick="navigateTo('home')" class="flex items-center space-x-2.5 text-brand-700 font-extrabold text-xl tracking-tight focus:outline-none">
+                <span class="p-2 bg-brand-100 rounded-xl text-brand-600 flex items-center justify-center">
+                    <i data-lucide="sprout" class="w-6 h-6"></i>
+                </span>
+                <span class="flex flex-col text-left">
+                    <span class="leading-none text-brand-800">Green Revival</span>
+                    <span class="text-[10px] text-brand-500 font-medium tracking-wider uppercase mt-0.5">Waste to Worth</span>
+                </span>
+            </button>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-medium">
+                <button onclick="navigateTo('home')" class="nav-btn px-3 py-2 rounded-lg text-gray-700 hover:text-brand-700 hover:bg-brand-50 transition">Home</button>
+                <button onclick="navigateTo('marketplace')" class="nav-btn px-3 py-2 rounded-lg text-gray-700 hover:text-brand-700 hover:bg-brand-50 transition">Marketplace</button>
+                <button onclick="navigateTo('pickup')" class="nav-btn px-3 py-2 rounded-lg text-gray-700 hover:text-brand-700 hover:bg-brand-50 transition">Request Pickup</button>
+                <button onclick="navigateTo('ai-identify')" class="nav-btn px-3 py-2 rounded-lg text-gray-700 hover:text-brand-700 hover:bg-brand-50 transition flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i> AI Scanner
+                </button>
+                
+                <div class="h-4 w-px bg-gray-200 mx-2"></div>
+
+                <div id="nav-dashboard-link" class="hidden">
+                    <button onclick="navigateToDashboard()" class="px-3 py-2 rounded-lg text-brand-700 bg-brand-100/70 font-semibold hover:bg-brand-200 transition flex items-center gap-1.5">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Action Buttons / Profile -->
+            <div class="flex items-center space-x-3">
+                <!-- Cart Button -->
+                <button onclick="toggleCartModal()" class="relative p-2 rounded-xl text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition focus:outline-none">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-brand-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
+                </button>
+
+                <div id="nav-auth-buttons" class="flex items-center space-x-2">
+                    <button onclick="navigateTo('login')" class="text-sm font-semibold px-4 py-2 rounded-lg text-brand-700 hover:bg-brand-50 transition">Log In</button>
+                    <button onclick="navigateTo('signup')" class="text-sm font-semibold px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white shadow-md shadow-brand-600/20 transition">Sign Up</button>
+                </div>
+
+                <div id="nav-user-menu" class="hidden flex items-center gap-3">
+                    <div class="relative inline-block text-left">
+                        <button id="user-menu-btn" onclick="toggleUserDropdown()" class="flex items-center gap-2 p-1.5 rounded-xl border border-gray-200 hover:border-brand-300 bg-white transition">
+                            <div id="user-avatar" class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-xs">U</div>
+                            <span id="user-name-display" class="text-xs font-semibold text-gray-700 hidden sm:inline-block pr-1">User</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-400"></i>
+                        </button>
+                        <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-xl bg-white shadow-xl border border-gray-100 py-1 z-50 animate-fade-in">
+                            <div class="px-4 py-2 border-b border-gray-100">
+                                <p id="user-role-badge" class="text-[10px] font-bold text-brand-600 uppercase tracking-wider">Role</p>
+                                <p id="user-email-display" class="text-xs text-gray-500 truncate">user@greenrevival.org</p>
+                            </div>
+                            <button onclick="navigateToDashboard(); toggleUserDropdown();" class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-brand-50 flex items-center gap-2">
+                                <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i> Dashboard
+                            </button>
+                            <button onclick="logout()" class="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-red-50 flex items-center gap-2">
+                                <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-brand-50">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-brand-100 bg-white px-4 pt-2 pb-4 space-y-2">
+            <button onclick="navigateTo('home'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-brand-50">Home</button>
+            <button onclick="navigateTo('marketplace'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-brand-50">Marketplace</button>
+            <button onclick="navigateTo('pickup'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-brand-50">Request Pickup</button>
+            <button onclick="navigateTo('ai-identify'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-brand-50 flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i> AI Material Identification
+            </button>
+            <div id="mobile-dashboard-link" class="hidden pt-2 border-t border-gray-100">
+                <button onclick="navigateToDashboard(); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-brand-700 bg-brand-50 flex items-center gap-2">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> My Dashboard
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow">
+        
+        <!-- ================= PAGE 1: HOME ================= -->
+        <section id="page-home" class="page-view animate-fade-in">
+            <!-- Hero Banner -->
+            <div class="relative bg-gradient-to-br from-brand-100 via-brand-50 to-white overflow-hidden py-16 sm:py-24 border-b border-brand-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        <div class="lg:col-span-7 space-y-6">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-200/60 border border-brand-300 text-brand-800 text-xs font-semibold tracking-wide uppercase">
+                                <i data-lucide="recycle" class="w-4 h-4 text-brand-600"></i> Sustainable Waste Ecosystem
+                            </div>
+                            <h1 class="text-4xl sm:text-6xl font-black text-brand-800 tracking-tight leading-[1.15]">
+                                Turning Waste into <span class="text-brand-600 underline decoration-brand-300">Worth.</span>
+                            </h1>
+                            <p class="text-lg text-gray-600 max-w-2xl font-normal leading-relaxed">
+                                Give discarded materials a second life. Green Revival seamlessly bridges the gap between waste generators, local recyclers, and creative upcycling artisans.
+                            </p>
+                            <div class="pt-2 flex flex-wrap gap-4">
+                                <button onclick="navigateTo('pickup')" class="px-6 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-600/25 transition transform active:scale-95 flex items-center gap-2">
+                                    <i data-lucide="truck" class="w-4 h-4"></i> Request Waste Pickup
+                                </button>
+                                <button onclick="navigateTo('marketplace')" class="px-6 py-3.5 rounded-xl bg-white hover:bg-brand-50 text-brand-700 border border-brand-300 font-bold text-sm shadow-sm transition transform active:scale-95 flex items-center gap-2">
+                                    <i data-lucide="shopping-bag" class="w-4 h-4"></i> Explore Marketplace
+                                </button>
+                            </div>
+                            <!-- Live Impact Counter Strip -->
+                            <div class="pt-6 grid grid-cols-3 gap-4 border-t border-brand-200/50 max-w-md">
+                                <div>
+                                    <div class="text-2xl font-extrabold text-brand-700" id="stat-waste-reused">1,250 kg</div>
+                                    <div class="text-xs text-gray-500 font-medium">Waste Diverted</div>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-extrabold text-brand-700" id="stat-products-created">250+</div>
+                                    <div class="text-xs text-gray-500 font-medium">Upcycled Items</div>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-extrabold text-brand-700" id="stat-active-users">120</div>
+                                    <div class="text-xs text-gray-500 font-medium">Active Eco-Users</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Hero Graphics / Visual Card -->
+                        <div class="lg:col-span-5 relative">
+                            <div class="relative mx-auto max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-brand-100 space-y-6">
+                                <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                                            <i data-lucide="cpu" class="w-5 h-5"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-gray-800">Smart AI Material Identifier</h4>
+                                            <p class="text-xs text-gray-500">AWS Bedrock Powered</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full">ACTIVE</span>
+                                </div>
+                                <div class="bg-brand-50 rounded-2xl p-4 text-center border border-dashed border-brand-300">
+                                    <div class="text-4xl mb-2">📦 📰 👖 🪵</div>
+                                    <p class="text-xs font-medium text-brand-800">Cardboard, Wood, Denim & Textiles</p>
+                                    <span class="text-[11px] text-gray-500">Detect reusable resources instantly with image recognition.</span>
+                                </div>
+                                <button onclick="navigateTo('ai-identify')" class="w-full py-2.5 bg-brand-100 hover:bg-brand-200 text-brand-800 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-2">
+                                    Try AI Material Scanner <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-brand-600">Simple Process</h2>
+                    <h3 class="text-3xl font-bold text-brand-800 mt-1">How Green Revival Works</h3>
+                    <p class="text-gray-600 text-sm mt-2">Connecting waste producers with upcycling creators step by step.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-100 hover:shadow-md transition">
+                        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-lg mb-4">01</div>
+                        <h4 class="font-bold text-brand-800 text-lg">Collect</h4>
+                        <p class="text-gray-600 text-sm mt-2">Submit unwanted wooden blocks, paper, cardboard, or old clothes for pickup.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-100 hover:shadow-md transition">
+                        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-lg mb-4">02</div>
+                        <h4 class="font-bold text-brand-800 text-lg">Identify</h4>
+                        <p class="text-gray-600 text-sm mt-2">AI scans material type, quality, and potential upcycling capabilities.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-100 hover:shadow-md transition">
+                        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-lg mb-4">03</div>
+                        <h4 class="font-bold text-brand-800 text-lg">Transform</h4>
+                        <p class="text-gray-600 text-sm mt-2">Verified creators and recyclers turn raw materials into functional goods.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-100 hover:shadow-md transition">
+                        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-lg mb-4">04</div>
+                        <h4 class="font-bold text-brand-800 text-lg">Reuse</h4>
+                        <p class="text-gray-600 text-sm mt-2">Purchase unique upcycled products and support local sustainable artisans.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Material Focus Section -->
+            <div class="bg-brand-100/50 py-16 border-y border-brand-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-2xl font-bold text-brand-800 text-center mb-8">Materials We Collect & Upcycle</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl text-center border border-brand-200 shadow-sm hover:scale-[1.02] transition">
+                            <div class="text-4xl mb-2">🪵</div>
+                            <h4 class="font-bold text-brand-800 text-sm">Wasted Wood</h4>
+                            <p class="text-xs text-gray-500 mt-1">Pallets, scrap blocks, old furniture pieces</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl text-center border border-brand-200 shadow-sm hover:scale-[1.02] transition">
+                            <div class="text-4xl mb-2">📦</div>
+                            <h4 class="font-bold text-brand-800 text-sm">Cardboard</h4>
+                            <p class="text-xs text-gray-500 mt-1">Shipping boxes, packaging materials</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl text-center border border-brand-200 shadow-sm hover:scale-[1.02] transition">
+                            <div class="text-4xl mb-2">📰</div>
+                            <h4 class="font-bold text-brand-800 text-sm">Paper Waste</h4>
+                            <p class="text-xs text-gray-500 mt-1">Newspapers, office paper, notebooks</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl text-center border border-brand-200 shadow-sm hover:scale-[1.02] transition">
+                            <div class="text-4xl mb-2">👖</div>
+                            <h4 class="font-bold text-brand-800 text-sm">Denim & Clothes</h4>
+                            <p class="text-xs text-gray-500 mt-1">Used apparel, fabric scraps, denim jeans</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: MARKETPLACE ================= -->
+        <section id="page-marketplace" class="page-view hidden animate-fade-in py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-brand-800">Upcycled Marketplace</h1>
+                    <p class="text-sm text-gray-600 mt-1">Shop unique, high-quality products crafted from recycled materials.</p>
+                </div>
+                <!-- Filters -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+                    <button onclick="filterMarketplace('all')" class="market-filter-btn active-filter px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-sm">All Items</button>
+                    <button onclick="filterMarketplace('wood')" class="market-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-brand-50 border border-gray-200">Wood</button>
+                    <button onclick="filterMarketplace('paper')" class="market-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-brand-50 border border-gray-200">Paper</button>
+                    <button onclick="filterMarketplace('textile')" class="market-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-brand-50 border border-gray-200">Denim & Fabric</button>
+                    <button onclick="filterMarketplace('cardboard')" class="market-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-brand-50 border border-gray-200">Cardboard</button>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="marketplace-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Dynamic Products Rendered Here -->
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: WASTE PICKUP REQUEST ================= -->
+        <section id="page-pickup" class="page-view hidden animate-fade-in py-8 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-brand-100">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-brand-100 rounded-2xl text-brand-600">
+                        <i data-lucide="truck" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-brand-800">Request Waste Pickup</h1>
+                        <p class="text-xs text-gray-500">Schedule doorstep collection for your reusable materials.</p>
+                    </div>
+                </div>
+
+                <form id="pickup-form" onsubmit="handlePickupSubmit(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Material Type</label>
+                        <select id="pickup-material" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm bg-gray-50/50">
+                            <option value="Wasted Wooden Blocks">Wasted Wooden Blocks & Pieces</option>
+                            <option value="Cardboard Boxes">Cardboard Boxes & Scraps</option>
+                            <option value="Old Newspapers & Paper">Old Newspapers & Used Paper</option>
+                            <option value="Discarded Cloth Materials">Discarded Fabrics / Clothes</option>
+                            <option value="Old Jeans & Denim">Old Jeans & Denim Fabrics</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Estimated Quantity (kg)</label>
+                            <input type="number" id="pickup-quantity" min="1" max="500" value="5" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm bg-gray-50/50" placeholder="e.g. 10">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Preferred Date</label>
+                            <input type="date" id="pickup-date" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm bg-gray-50/50">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pickup Address</label>
+                        <textarea id="pickup-address" rows="3" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm bg-gray-50/50" placeholder="Street name, landmark, city, postal code..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Upload Photo (Optional)</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-2xl p-4 text-center hover:bg-brand-50/50 transition cursor-pointer relative" onclick="document.getElementById('pickup-photo-input').click()">
+                            <input type="file" id="pickup-photo-input" accept="image/*" class="hidden" onchange="previewPickupImage(this)">
+                            <div id="pickup-photo-preview-container">
+                                <i data-lucide="upload-cloud" class="w-8 h-8 text-brand-500 mx-auto mb-2"></i>
+                                <p class="text-xs font-semibold text-gray-700">Click to attach photo</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">PNG, JPG or WEBP up to 5MB</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-600/20 transition">
+                        Submit Pickup Request
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: AI MATERIAL IDENTIFIER ================= -->
+        <section id="page-ai-identify" class="page-view hidden animate-fade-in py-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-bold mb-2">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Amazon Rekognition & Bedrock AI
+                </div>
+                <h1 class="text-3xl font-extrabold text-brand-800">AI Material Identification</h1>
+                <p class="text-sm text-gray-600 mt-1">Upload an image of your waste material to let our AI scan its composition, quality rating, and potential upcycled creations.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Image Upload Side -->
+                <div class="bg-white p-6 rounded-3xl shadow-md border border-brand-100 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3">Upload Sample Photo</h3>
+                        <div id="ai-dropzone" class="border-2 border-dashed border-brand-300 bg-brand-50/40 rounded-2xl p-6 text-center hover:border-brand-500 transition cursor-pointer" onclick="document.getElementById('ai-file-input').click()">
+                            <input type="file" id="ai-file-input" accept="image/*" class="hidden" onchange="runAIScan(this)">
+                            <div id="ai-upload-placeholder">
+                                <i data-lucide="scan" class="w-10 h-10 text-brand-600 mx-auto mb-2"></i>
+                                <p class="text-xs font-semibold text-brand-800">Drop image here or click to browse</p>
+                                <p class="text-[10px] text-gray-500 mt-1">Supports Wood, Paper, Cardboard, Cloth, Denim</p>
+                            </div>
+                            <img id="ai-img-preview" class="hidden w-full h-48 object-cover rounded-xl mx-auto border border-brand-200" alt="Preview">
+                        </div>
+
+                        <!-- Sample Quick Test Buttons -->
+                        <div class="mt-4">
+                            <p class="text-[11px] font-bold text-gray-500 uppercase mb-2">Or test with preset samples:</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="triggerAISample('wood')" class="p-2 border rounded-xl text-xs font-medium hover:bg-brand-50 hover:border-brand-300 flex flex-col items-center gap-1">
+                                    <span>🪵</span> Wood Scraps
+                                </button>
+                                <button onclick="triggerAISample('cardboard')" class="p-2 border rounded-xl text-xs font-medium hover:bg-brand-50 hover:border-brand-300 flex flex-col items-center gap-1">
+                                    <span>📦</span> Cardboard
+                                </button>
+                                <button onclick="triggerAISample('denim')" class="p-2 border rounded-xl text-xs font-medium hover:bg-brand-50 hover:border-brand-300 flex flex-col items-center gap-1">
+                                    <span>👖</span> Denim Scraps
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="analyzeSelectedAI()" class="mt-6 w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        <i data-lucide="cpu" class="w-4 h-4"></i> Run AI Scanner
+                    </button>
+                </div>
+
+                <!-- AI Analysis Result Side -->
+                <div class="bg-white p-6 rounded-3xl shadow-md border border-brand-100 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3">AI Analysis Output</h3>
+                        
+                        <div id="ai-loader" class="hidden py-12 text-center">
+                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-500 border-t-transparent"></div>
+                            <p class="text-xs text-brand-700 font-bold mt-3">Analyzing Material Microstructure...</p>
+                        </div>
+
+                        <div id="ai-empty-state" class="py-12 text-center text-gray-400">
+                            <i data-lucide="bot" class="w-12 h-12 mx-auto mb-2 opacity-40"></i>
+                            <p class="text-xs">No analysis performed yet. Upload an image or select a sample to begin.</p>
+                        </div>
+
+                        <div id="ai-results" class="hidden space-y-4">
+                            <div class="flex items-center justify-between bg-brand-50 p-3.5 rounded-2xl border border-brand-200">
+                                <div>
+                                    <span class="text-[10px] font-extrabold text-brand-600 uppercase tracking-wider">Detected Material</span>
+                                    <h4 id="ai-res-material" class="text-lg font-extrabold text-brand-800">Cardboard Packaging</h4>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] font-bold text-gray-500 uppercase">Confidence</span>
+                                    <div id="ai-res-confidence" class="text-lg font-black text-brand-600">94.8%</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h5 class="text-xs font-bold text-gray-700 uppercase mb-1">Recommended Upcycling Ideas</h5>
+                                <ul id="ai-res-ideas" class="space-y-1.5 text-xs text-gray-600">
+                                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-600"></i> Desktop Cardboard Organizers</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-600"></i> Compressed Storage Containers</li>
+                                </ul>
+                            </div>
+
+                            <div class="pt-2 border-t border-gray-100">
+                                <span class="text-[10px] font-bold text-gray-500 uppercase">Recyclability Index</span>
+                                <div class="w-full bg-gray-100 rounded-full h-2.5 mt-1 overflow-hidden">
+                                    <div id="ai-res-bar" class="bg-brand-500 h-2.5 rounded-full" style="width: 88%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="ai-action-btn" class="hidden pt-4">
+                        <button onclick="requestPickupWithAIMaterial()" class="w-full py-2.5 bg-brand-100 hover:bg-brand-200 text-brand-800 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2">
+                            Request Pickup for this Material <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 5: DASHBOARDS (USER / CREATOR / ADMIN) ================= -->
+        <section id="page-dashboard" class="page-view hidden animate-fade-in py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Dashboard View Switcher Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 pb-4 mb-6 gap-4">
+                <div>
+                    <h1 class="text-2xl font-extrabold text-brand-800">Control Panel</h1>
+                    <p id="dashboard-subtitle" class="text-xs text-gray-500">Manage your eco-contributions, orders, and pickups.</p>
+                </div>
+                <!-- Role Selector Tabs for Prototype Switch -->
+                <div class="bg-white p-1 rounded-2xl border border-gray-200 flex items-center shadow-sm">
+                    <button onclick="switchDashboardTab('user')" id="tab-dash-user" class="dash-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-brand-700 bg-brand-100">
+                        User View
+                    </button>
+                    <button onclick="switchDashboardTab('creator')" id="tab-dash-creator" class="dash-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-gray-600 hover:text-brand-700">
+                        Creator View
+                    </button>
+                    <button onclick="switchDashboardTab('admin')" id="tab-dash-admin" class="dash-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-gray-600 hover:text-brand-700">
+                        Admin View
+                    </button>
+                </div>
+            </div>
+
+            <!-- DASHBOARD TAB 1: USER DASHBOARD -->
+            <div id="dash-view-user" class="dash-view space-y-6">
+                <!-- User Stats -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm flex items-center gap-4">
+                        <div class="p-3 bg-brand-100 text-brand-600 rounded-xl"><i data-lucide="recycle" class="w-6 h-6"></i></div>
+                        <div>
+                            <div class="text-2xl font-black text-brand-800">18 kg</div>
+                            <div class="text-xs text-gray-500 font-medium">Waste Submitted</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm flex items-center gap-4">
+                        <div class="p-3 bg-brand-100 text-brand-600 rounded-xl"><i data-lucide="package" class="w-6 h-6"></i></div>
+                        <div>
+                            <div class="text-2xl font-black text-brand-800" id="user-dash-pickup-count">3</div>
+                            <div class="text-xs text-gray-500 font-medium">Pickup Requests</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm flex items-center gap-4">
+                        <div class="p-3 bg-brand-100 text-brand-600 rounded-xl"><i data-lucide="shopping-cart" class="w-6 h-6"></i></div>
+                        <div>
+                            <div class="text-2xl font-black text-brand-800" id="user-dash-order-count">2</div>
+                            <div class="text-xs text-gray-500 font-medium">Marketplace Orders</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Pickups List -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-brand-100">
+                    <h3 class="text-base font-bold text-brand-800 mb-4">My Pickup Requests</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="border-b border-gray-100 text-gray-400 uppercase tracking-wider">
+                                    <th class="pb-3 font-semibold">ID</th>
+                                    <th class="pb-3 font-semibold">Material</th>
+                                    <th class="pb-3 font-semibold">Quantity</th>
+                                    <th class="pb-3 font-semibold">Address</th>
+                                    <th class="pb-3 font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-pickups-tbody" class="divide-y divide-gray-50 text-gray-700">
+                                <!-- Dynamic Pickups -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD TAB 2: RECYCLER / CREATOR DASHBOARD -->
+            <div id="dash-view-creator" class="dash-view hidden space-y-6">
+                <!-- Creator Stats -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm">
+                        <div class="text-xs text-gray-500 font-medium">Pending Pickup Jobs</div>
+                        <div class="text-2xl font-black text-brand-800 mt-1">24 Jobs</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm">
+                        <div class="text-xs text-gray-500 font-medium">Upcycled Products Listed</div>
+                        <div class="text-2xl font-black text-brand-800 mt-1" id="creator-product-count">18</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm">
+                        <div class="text-xs text-gray-500 font-medium">Total Sales Earnings</div>
+                        <div class="text-2xl font-black text-brand-600 mt-1">₹12,400</div>
+                    </div>
+                </div>
+
+                <!-- Create New Product Section -->
+                <div class="bg-white p-6 rounded-3xl border border-brand-100 shadow-sm">
+                    <h3 class="text-base font-bold text-brand-800 mb-4">Add Upcycled Product to Marketplace</h3>
+                    <form id="creator-add-product-form" onsubmit="handleCreatorAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1">Product Name</label>
+                            <input type="text" id="prod-title" required class="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs" placeholder="e.g. Denim Tote Bag">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1">Price (₹)</label>
+                            <input type="number" id="prod-price" required min="1" class="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs" placeholder="299">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1">Material Category</label>
+                            <select id="prod-category" class="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs">
+                                <option value="wood">Wood</option>
+                                <option value="paper">Paper</option>
+                                <option value="textile">Denim & Textile</option>
+                                <option value="cardboard">Cardboard</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1">Emoji Icon</label>
+                            <input type="text" id="prod-emoji" required class="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs" placeholder="🪴">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <button type="submit" class="w-full py-2.5 bg-brand-600 text-white font-bold text-xs rounded-xl hover:bg-brand-700 transition">
+                                Publish Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- DASHBOARD TAB 3: ADMIN DASHBOARD -->
+            <div id="dash-view-admin" class="dash-view hidden space-y-6">
+                <!-- System-wide Stats -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-brand-100 shadow-sm text-center">
+                        <span class="text-2xl font-black text-brand-700">120</span>
+                        <p class="text-[11px] text-gray-500 font-medium">Total Users</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-brand-100 shadow-sm text-center">
+                        <span class="text-2xl font-black text-brand-700">1,250 kg</span>
+                        <p class="text-[11px] text-gray-500 font-medium">Waste Diverted</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-brand-100 shadow-sm text-center">
+                        <span class="text-2xl font-black text-brand-700">48</span>
+                        <p class="text-[11px] text-gray-500 font-medium">Pickups Done</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-brand-100 shadow-sm text-center">
+                        <span class="text-2xl font-black text-brand-700">250</span>
+                        <p class="text-[11px] text-gray-500 font-medium">Marketplace Items</p>
+                    </div>
+                </div>
+
+                <!-- AWS Cloud System Health Banner -->
+                <div class="bg-brand-800 text-white rounded-3xl p-6 shadow-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-bold text-sm flex items-center gap-2">
+                            <i data-lucide="cloud" class="w-4 h-4 text-brand-500"></i> AWS Cloud Architecture Status
+                        </h4>
+                        <span class="px-2 py-0.5 bg-green-500/20 text-green-300 text-[10px] font-bold rounded-full">SYSTEM HEALTHY</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                        <div class="bg-white/10 p-3 rounded-xl"><p class="text-gray-300 text-[10px]">Auth</p><p class="font-semibold">AWS Cognito</p></div>
+                        <div class="bg-white/10 p-3 rounded-xl"><p class="text-gray-300 text-[10px]">Database</p><p class="font-semibold">AWS RDS (PostgreSQL)</p></div>
+                        <div class="bg-white/10 p-3 rounded-xl"><p class="text-gray-300 text-[10px]">Image Storage</p><p class="font-semibold">Amazon S3 Bucket</p></div>
+                        <div class="bg-white/10 p-3 rounded-xl"><p class="text-gray-300 text-[10px]">AI Engine</p><p class="font-semibold">Amazon Bedrock</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 6: AUTHENTICATION (LOGIN / SIGNUP) ================= -->
+        <section id="page-login" class="page-view hidden animate-fade-in py-12 max-w-md mx-auto px-4">
+            <div class="bg-white p-8 rounded-3xl shadow-xl border border-brand-100">
+                <div class="text-center mb-6">
+                    <span class="inline-block p-3 bg-brand-100 text-brand-600 rounded-2xl mb-2">
+                        <i data-lucide="lock" class="w-6 h-6"></i>
+                    </span>
+                    <h1 class="text-2xl font-extrabold text-brand-800">Welcome Back</h1>
+                    <p class="text-xs text-gray-500">Sign in to your Green Revival account</p>
+                </div>
+                <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email</label>
+                        <input type="email" id="login-email" required value="user@greenrevival.org" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Password</label>
+                        <input type="password" id="login-password" required value="password123" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-xs">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-md transition">
+                        Log In
+                    </button>
+                </form>
+                <p class="text-center text-xs text-gray-500 mt-4">Don't have an account? <button onclick="navigateTo('signup')" class="text-brand-600 font-bold hover:underline">Sign Up</button></p>
+            </div>
+        </section>
+
+        <section id="page-signup" class="page-view hidden animate-fade-in py-12 max-w-md mx-auto px-4">
+            <div class="bg-white p-8 rounded-3xl shadow-xl border border-brand-100">
+                <div class="text-center mb-6">
+                    <span class="inline-block p-3 bg-brand-100 text-brand-600 rounded-2xl mb-2">
+                        <i data-lucide="user-plus" class="w-6 h-6"></i>
+                    </span>
+                    <h1 class="text-2xl font-extrabold text-brand-800">Create Account</h1>
+                    <p class="text-xs text-gray-500">Join the waste-to-worth community</p>
+                </div>
+                <form onsubmit="handleSignupSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Full Name</label>
+                        <input type="text" id="signup-name" required placeholder="Alex Green" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email Address</label>
+                        <input type="email" id="signup-email" required placeholder="alex@example.com" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Account Type</label>
+                        <select id="signup-role" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-xs bg-white">
+                            <option value="Buyer">Eco Buyer / Recycler Consumer</option>
+                            <option value="Creator">Recycler / Creator Artisan</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-md transition">
+                        Create Account
+                    </button>
+                </form>
+                <p class="text-center text-xs text-gray-500 mt-4">Already registered? <button onclick="navigateTo('login')" class="text-brand-600 font-bold hover:underline">Log In</button></p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SHOPPING CART MODAL -->
+    <div id="cart-modal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 animate-fade-in">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+                <h3 class="font-bold text-lg text-brand-800 flex items-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-600"></i> Shopping Cart
+                </h3>
+                <button onclick="toggleCartModal()" class="text-gray-400 hover:text-gray-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <div id="cart-items-container" class="py-4 space-y-3 max-h-60 overflow-y-auto">
+                <!-- Cart Items dynamically populated -->
+            </div>
+
+            <div class="pt-4 border-t border-gray-100 space-y-3">
+                <div class="flex justify-between text-sm font-bold text-gray-800">
+                    <span>Total Amount:</span>
+                    <span id="cart-total-price" class="text-brand-600">₹0</span>
+                </div>
+                <button onclick="checkoutCart()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-md transition">
+                    Proceed to Payment (Stripe / Razorpay Demo)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-800 text-white border-t border-brand-700 mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <div class="flex items-center justify-center gap-2 font-bold text-lg text-brand-100">
+                🌱 Green Revival
+            </div>
+            <p class="text-xs text-brand-200">Turning Waste into Worth • Reduce • Reuse • Recycle • Revive</p>
+            <p class="text-[10px] text-brand-200/60">© 2026 Green Revival Prototype. AWS Cloud Integrated Application.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE APP LOGIC & STATE MANAGEMENT -->
+    <script>
+        // GLOBAL APP STATE
+        const appState = {
+            currentUser: null, // { name, email, role }
+            cart: [],
+            pickupRequests: [
+                { id: 'PU-101', material: 'Cardboard Boxes', quantity: '12 kg', address: '42 Eco Street, Sector 5', status: 'Approved' },
+                { id: 'PU-102', material: 'Old Jeans & Denim', quantity: '5 kg', address: 'Green Heights, Apt 2B', status: 'Pending' }
+            ],
+            marketplaceProducts: [
+                { id: 1, title: 'Wood Plant Holder', price: 299, category: 'wood', emoji: '🪴', desc: 'Crafted from wasted wood blocks.' },
+                { id: 2, title: 'Recycled Notebook', price: 149, category: 'paper', emoji: '📔', desc: '100% recycled newsprint paper.' },
+                { id: 3, title: 'Denim Tote Bag', price: 399, category: 'textile', emoji: '👜', desc: 'Handcrafted from repurposed jeans.' },
+                { id: 4, title: 'Cardboard Organizer', price: 199, category: 'cardboard', emoji: '📦', desc: 'Durable multi-tier desk storage.' }
+            ]
+        };
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderMarketplace();
+            renderUserPickups();
+            updateCartUI();
+        });
+
+        // ROUTING / PAGE SWITCHER
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.add('hidden'));
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function navigateToDashboard() {
+            navigateTo('dashboard');
+            switchDashboardTab(appState.currentUser?.role === 'Creator' ? 'creator' : 'user');
+        }
+
+        // AUTHENTICATION LOGIC
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            appState.currentUser = {
+                name: email.split('@')[0],
+                email: email,
+                role: 'Buyer'
+            };
+            updateAuthUI();
+            showToast('Login Successful!', 'welcome back');
+            navigateToDashboard();
+        }
+
+        function handleSignupSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const role = document.getElementById('signup-role').value;
+
+            appState.currentUser = { name, email, role };
+            updateAuthUI();
+            showToast('Account Created!', `Registered as ${role}`);
+            navigateToDashboard();
+        }
+
+        function logout() {
+            appState.currentUser = null;
+            updateAuthUI();
+            showToast('Logged Out', 'See you again soon!');
+            navigateTo('home');
+        }
+
+        function updateAuthUI() {
+            const authBtns = document.getElementById('nav-auth-buttons');
+            const userMenu = document.getElementById('nav-user-menu');
+            const dashLink = document.getElementById('nav-dashboard-link');
+            const mobileDashLink = document.getElementById('mobile-dashboard-link');
+
+            if (appState.currentUser) {
+                authBtns.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                dashLink.classList.remove('hidden');
+                mobileDashLink.classList.remove('hidden');
+
+                document.getElementById('user-avatar').innerText = appState.currentUser.name.charAt(0).toUpperCase();
+                document.getElementById('user-name-display').innerText = appState.currentUser.name;
+                document.getElementById('user-email-display').innerText = appState.currentUser.email;
+                document.getElementById('user-role-badge').innerText = appState.currentUser.role;
+            } else {
+                authBtns.classList.remove('hidden');
+                userMenu.classList.add('hidden');
+                dashLink.classList.add('hidden');
+                mobileDashLink.classList.add('hidden');
+            }
+        }
+
+        function toggleUserDropdown() {
+            document.getElementById('user-dropdown').classList.toggle('hidden');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // DASHBOARD SWITCHER
+        function switchDashboardTab(tab) {
+            document.querySelectorAll('.dash-view').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.dash-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-100', 'text-brand-700');
+                btn.classList.add('text-gray-600');
+            });
+
+            document.getElementById(`dash-view-${tab}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-dash-${tab}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-brand-100', 'text-brand-700');
+            }
+        }
+
+        // MARKETPLACE RENDER & ACTIONS
+        function renderMarketplace(category = 'all') {
+            const container = document.getElementById('marketplace-grid');
+            container.innerHTML = '';
+
+            const filtered = category === 'all' 
+                ? appState.marketplaceProducts 
+                : appState.marketplaceProducts.filter(p => p.category === category);
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-3xl border border-brand-100 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="h-36 bg-brand-50 rounded-2xl flex items-center justify-center text-6xl mb-4 border border-brand-100">
+                            ${p.emoji}
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-100 px-2 py-0.5 rounded-md">${p.category}</span>
+                        <h3 class="font-bold text-brand-800 text-base mt-1">${p.title}</h3>
+                        <p class="text-xs text-gray-500 mt-1">${p.desc}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+                        <span class="text-lg font-black text-brand-800">₹${p.price}</span>
+                        <button onclick="addToCart(${p.id})" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterMarketplace(cat) {
+            document.querySelectorAll('.market-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-700');
+            });
+            event.target.classList.add('bg-brand-600', 'text-white');
+            renderMarketplace(cat);
+        }
+
+        function addToCart(productId) {
+            const product = appState.marketplaceProducts.find(p => p.id === productId);
+            if (product) {
+                appState.cart.push(product);
+                updateCartUI();
+                showToast('Added to Cart', product.title);
+            }
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('cart-badge');
+            if (appState.cart.length > 0) {
+                badge.classList.remove('hidden');
+                badge.innerText = appState.cart.length;
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            let total = 0;
+
+            if (appState.cart.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">Your cart is empty.</p>`;
+            } else {
+                appState.cart.forEach((item, idx) => {
+                    total += item.price;
+                    const row = document.createElement('div');
+                    row.className = "flex items-center justify-between text-xs py-1 border-b border-gray-50";
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span>${item.emoji}</span>
+                            <span class="font-semibold text-gray-700">${item.title}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold">₹${item.price}</span>
+                            <button onclick="removeFromCart(${idx})" class="text-red-500 hover:text-red-700"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+
+            document.getElementById('cart-total-price').innerText = `₹${total}`;
+            lucide.createIcons();
+        }
+
+        function removeFromCart(index) {
+            appState.cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function toggleCartModal() {
+            document.getElementById('cart-modal').classList.toggle('hidden');
+        }
+
+        function checkoutCart() {
+            if (appState.cart.length === 0) return;
+            showToast('Order Placed!', 'Razorpay / Stripe Payment Processed');
+            appState.cart = [];
+            updateCartUI();
+            toggleCartModal();
+        }
+
+        // PICKUP FORM LOGIC
+        function handlePickupSubmit(e) {
+            e.preventDefault();
+            const material = document.getElementById('pickup-material').value;
+            const quantity = document.getElementById('pickup-quantity').value + ' kg';
+            const address = document.getElementById('pickup-address').value;
+
+            const newPickup = {
+                id: `PU-${Math.floor(100 + Math.random() * 900)}`,
+                material,
+                quantity,
+                address,
+                status: 'Pending'
+            };
+
+            appState.pickupRequests.unshift(newPickup);
+            renderUserPickups();
+            showToast('Pickup Requested!', 'A local recycler will accept your job.');
+            navigateToDashboard();
+        }
+
+        function renderUserPickups() {
+            const tbody = document.getElementById('user-pickups-tbody');
+            tbody.innerHTML = '';
+            appState.pickupRequests.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-3 font-mono text-[11px] font-bold text-gray-500">${p.id}</td>
+                    <td class="py-3 font-semibold text-gray-800">${p.material}</td>
+                    <td class="py-3">${p.quantity}</td>
+                    <td class="py-3 text-gray-500 truncate max-w-xs">${p.address}</td>
+                    <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.status === 'Approved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">${p.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            document.getElementById('user-dash-pickup-count').innerText = appState.pickupRequests.length;
+        }
+
+        function previewPickupImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('pickup-photo-preview-container').innerHTML = `
+                        <img src="${e.target.result}" class="h-24 mx-auto rounded-xl border border-brand-200">
+                    `;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // AI SCANNER SIMULATION
+        let selectedAISample = 'cardboard';
+
+        function triggerAISample(type) {
+            selectedAISample = type;
+            const preview = document.getElementById('ai-img-preview');
+            const placeholder = document.getElementById('ai-upload-placeholder');
+            
+            placeholder.classList.add('hidden');
+            preview.classList.remove('hidden');
+
+            if (type === 'wood') preview.src = 'https://placehold.co/400x300/e4f4df/1f6335?text=Wasted+Wood+Blocks';
+            else if (type === 'cardboard') preview.src = 'https://placehold.co/400x300/e4f4df/1f6335?text=Cardboard+Boxes';
+            else if (type === 'denim') preview.src = 'https://placehold.co/400x300/e4f4df/1f6335?text=Used+Denim+Scraps';
+        }
+
+        function runAIScan(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('ai-upload-placeholder').classList.add('hidden');
+                    const img = document.getElementById('ai-img-preview');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function analyzeSelectedAI() {
+            document.getElementById('ai-empty-state').classList.add('hidden');
+            document.getElementById('ai-results').classList.add('hidden');
+            document.getElementById('ai-loader').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.getElementById('ai-loader').classList.add('hidden');
+                document.getElementById('ai-results').classList.remove('hidden');
+                document.getElementById('ai-action-btn').classList.remove('hidden');
+
+                if (selectedAISample === 'wood') {
+                    document.getElementById('ai-res-material').innerText = 'Scrap Wood & Timber';
+                    document.getElementById('ai-res-confidence').innerText = '96.2%';
+                    document.getElementById('ai-res-ideas').innerHTML = `
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-600"></i> Plant Pots & Furniture Framework</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-600"></i> Decorative Wall Art Pieces</li>
+                    `;
+                } else if (selectedAISample === 'denim') {
+                    document.getElementById('ai-res-material').innerText = 'Cotton Denim Fabrics';
+                    document.getElementById('ai-res-confidence').innerText = '91.5%';
+                    document.getElementById('ai-res-ideas').innerHTML = `
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-600"></i> Upcycled Denim Tote Bags</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-600"></i> Fabric Insulation & Quilts</li>
+                    `;
+                } else {
+                    document.getElementById('ai-res-material').innerText = 'Cardboard Packaging';
+                    document.getElementById('ai-res-confidence').innerText = '94.8%';
+                    document.getElementById('ai-res-ideas').innerHTML = `
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-600"></i> Desk Organizers & Storage Boxes</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand-600"></i> Recycled Pulp Crafts</li>
+                    `;
+                }
+                lucide.createIcons();
+            }, 1200);
+        }
+
+        function requestPickupWithAIMaterial() {
+            navigateTo('pickup');
+            showToast('AI Transfer Complete', 'Material auto-selected in pickup form.');
+        }
+
+        // CREATOR ADD PRODUCT
+        function handleCreatorAddProduct(e) {
+            e.preventDefault();
+            const title = document.getElementById('prod-title').value;
+            const price = parseInt(document.getElementById('prod-price').value);
+            const category = document.getElementById('prod-category').value;
+            const emoji = document.getElementById('prod-emoji').value || '🪴';
+
+            const newProduct = {
+                id: Date.now(),
+                title,
+                price,
+                category,
+                emoji,
+                desc: 'Creator upcycled product.'
+            };
+
+            appState.marketplaceProducts.unshift(newProduct);
+            renderMarketplace();
+            showToast('Product Published!', `${title} added to Marketplace.`);
+            document.getElementById('creator-add-product-form').reset();
+            document.getElementById('creator-product-count').innerText = appState.marketplaceProducts.length;
+        }
+
+        // TOAST NOTIFIER
+        function showToast(title, subtitle) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "pointer-events-auto bg-brand-800 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-fade-in border border-brand-600";
+            toast.innerHTML = `
+                <div class="p-1 bg-brand-600 rounded-lg"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+                <div>
+                    <h5 class="text-xs font-bold leading-none">${title}</h5>
+                    <p class="text-[10px] text-brand-200 mt-0.5">${subtitle}</p>
+                </div>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
